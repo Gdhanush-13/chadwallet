@@ -3,7 +3,9 @@
 import Navbar from "@/components/Navbar";
 import TokenBanner from "@/components/TokenBanner";
 import Hero from "@/components/Hero";
+import SplitSection from "@/components/SplitSection";
 import Features from "@/components/Features";
+import StatsSection from "@/components/StatsSection";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -12,7 +14,9 @@ export default function Home() {
       <Navbar />
       <TokenBanner position="top" />
       <Hero />
+      <SplitSection />
       <Features />
+      <StatsSection />
       <TokenBanner position="bottom" />
       <Footer />
     </div>

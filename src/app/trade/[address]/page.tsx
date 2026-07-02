@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { ArrowLeft, ExternalLink, Copy, Check } from "lucide-react";
+import { ArrowLeft, ExternalLink, Copy, Check, Star } from "lucide-react";
 import Link from "next/link";
 import TokenBanner from "@/components/TokenBanner";
 import TrendingList from "@/components/TrendingList";
@@ -17,6 +17,7 @@ interface TokenInfo {
   name: string;
   price: number;
   priceChange24: number;
+  volume24?: number;
 }
 
 export default function TradePage() {
@@ -34,25 +35,15 @@ export default function TradePage() {
         if (found) {
           setToken(found);
         } else {
-          setToken({
-            address,
-            symbol: address.slice(0, 4).toUpperCase(),
-            name: "Unknown Token",
-            price: 0,
-            priceChange24: 0,
-          });
+          setToken({ address, symbol: address.slice(0, 4).toUpperCase(), name: "Unknown Token", price: 0, priceChange24: 0 });
         }
       } catch {
-        setToken({
-          address,
-          symbol: "TOKEN",
-          name: "Token",
-          price: 0,
-          priceChange24: 0,
-        });
+        setToken({ address, symbol: "TOKEN", name: "Token", price: 0, priceChange24: 0 });
       }
     }
     fetchToken();
+    const iv = setInterval(fetchToken, 15000);
+    return () => clearInterval(iv);
   }, [address]);
 
   const handleCopy = () => {
@@ -61,95 +52,119 @@ export default function TradePage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const fmtPrice = (p: number) =>
+    p === 0 ? "—" : p < 0.01 ? `$${p.toExponential(2)}` : `$${p.toLocaleString(undefined, { maximumFractionDigits: 6 })}`;
+
+  const fmtVol = (v?: number) => {
+    if (!v) return "—";
+    if (v >= 1e9) return `$${(v / 1e9).toFixed(1)}B`;
+    if (v >= 1e6) return `$${(v / 1e6).toFixed(1)}M`;
+    return `$${(v / 1e3).toFixed(0)}K`;
+  };
+
   if (!token) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-yellow-400 border-t-transparent" />
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-yellow-400 border-t-transparent" />
       </div>
     );
   }
 
+  const isUp = token.priceChange24 >= 0;
+
   return (
-    <div className="flex min-h-screen flex-col bg-black">
+    <div className="flex h-screen flex-col bg-black overflow-hidden">
       <Navbar />
       <TokenBanner position="top" />
 
-      {/* Token Header */}
-      <div className="border-b border-zinc-800 bg-zinc-950 px-4 py-4">
-        <div className="mx-auto flex max-w-7xl items-center gap-4">
-          <Link href="/" className="rounded-lg border border-zinc-800 p-2 transition hover:bg-zinc-800">
-            <ArrowLeft className="h-4 w-4 text-zinc-400" />
+      {/* ── Token header bar ── */}
+      <div className="shrink-0 border-b border-zinc-800/80 bg-zinc-950 px-4 py-3">
+        <div className="mx-auto flex max-w-[1600px] items-center gap-3 flex-wrap">
+          <Link href="/" className="rounded-lg p-1.5 text-zinc-500 transition hover:bg-zinc-800 hover:text-white">
+            <ArrowLeft className="h-4 w-4" />
           </Link>
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-400/10 text-sm font-bold text-yellow-400">
+
+          {/* Token identity */}
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-yellow-400/15 text-xs font-black text-yellow-400">
             {token.symbol.slice(0, 2)}
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg font-bold text-white">{token.name}</h1>
-              <span className="rounded bg-zinc-800 px-2 py-0.5 text-xs font-bold text-yellow-400">
-                {token.symbol}
-              </span>
+          <div className="flex items-baseline gap-2">
+            <span className="text-base font-black text-white">{token.symbol}</span>
+            <span className="text-sm text-zinc-500">{token.name}</span>
+          </div>
+
+          {/* Price */}
+          <div className="flex items-baseline gap-2 ml-2">
+            <span className="text-xl font-black font-mono text-white">{fmtPrice(token.price)}</span>
+            <span className={`text-sm font-bold ${isUp ? "text-green-400" : "text-red-400"}`}>
+              {isUp ? "▲" : "▼"} {Math.abs(token.priceChange24).toFixed(2)}%
+            </span>
+          </div>
+
+          {/* Stats row */}
+          <div className="hidden xl:flex items-center gap-6 ml-4 border-l border-zinc-800 pl-4">
+            <div>
+              <div className="text-[10px] text-zinc-600 uppercase tracking-wide">24h Vol</div>
+              <div className="text-xs font-bold text-zinc-300">{fmtVol(token.volume24)}</div>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-2xl font-bold text-white font-mono">
-                ${token.price < 0.01 ? token.price.toExponential(2) : token.price.toLocaleString(undefined, { maximumFractionDigits: 6 })}
-              </span>
-              <span className={`text-sm font-medium ${token.priceChange24 >= 0 ? "text-green-400" : "text-red-400"}`}>
-                {token.priceChange24 >= 0 ? "+" : ""}{token.priceChange24.toFixed(2)}%
-              </span>
+            <div>
+              <div className="text-[10px] text-zinc-600 uppercase tracking-wide">Network</div>
+              <div className="text-xs font-bold text-yellow-400">Solana</div>
             </div>
           </div>
-          <div className="ml-auto hidden items-center gap-2 sm:flex">
+
+          {/* Right actions */}
+          <div className="ml-auto flex items-center gap-2">
             <button
               onClick={handleCopy}
-              className="flex items-center gap-1.5 rounded-lg border border-zinc-800 px-3 py-1.5 text-xs text-zinc-400 transition hover:bg-zinc-800"
+              className="hidden sm:flex items-center gap-1.5 rounded-lg border border-zinc-800 px-2.5 py-1.5 text-xs font-mono text-zinc-500 transition hover:border-zinc-600 hover:text-zinc-300"
             >
               {copied ? <Check className="h-3 w-3 text-green-400" /> : <Copy className="h-3 w-3" />}
-              {address.slice(0, 6)}...{address.slice(-4)}
+              {address.slice(0, 6)}…{address.slice(-4)}
             </button>
             <a
               href={`https://solscan.io/token/${address}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 rounded-lg border border-zinc-800 px-3 py-1.5 text-xs text-zinc-400 transition hover:bg-zinc-800"
+              className="hidden sm:flex items-center gap-1.5 rounded-lg border border-zinc-800 px-2.5 py-1.5 text-xs text-zinc-500 transition hover:border-zinc-600 hover:text-zinc-300"
             >
               <ExternalLink className="h-3 w-3" />
               Solscan
             </a>
+            <button className="rounded-lg border border-zinc-800 p-1.5 text-zinc-600 transition hover:border-yellow-500/40 hover:text-yellow-400">
+              <Star className="h-3.5 w-3.5" />
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Trading Layout */}
-      <div className="mx-auto flex w-full max-w-7xl flex-1 gap-4 p-4">
-        {/* Left: Trending */}
-        <div className="hidden w-64 shrink-0 lg:block">
+      {/* ── Main trading layout ── */}
+      <div className="flex flex-1 overflow-hidden max-w-[1600px] mx-auto w-full">
+
+        {/* Left: Trending tokens */}
+        <div className="hidden lg:flex w-56 xl:w-64 shrink-0 flex-col border-r border-zinc-800/60 overflow-y-auto">
           <TrendingList activeAddress={address} />
         </div>
 
-        {/* Middle: Chart + Trades */}
-        <div className="flex min-w-0 flex-1 flex-col gap-4">
-          <PriceChart address={address} />
-          <LiveTrades tokenSymbol={token.symbol} />
+        {/* Center: Chart + Live trades */}
+        <div className="flex flex-1 flex-col min-w-0 overflow-hidden">
+          <div className="flex-1 min-h-0 p-3">
+            <PriceChart address={address} />
+          </div>
+          <div className="h-56 shrink-0 border-t border-zinc-800/60 overflow-hidden">
+            <LiveTrades tokenSymbol={token.symbol} />
+          </div>
         </div>
 
-        {/* Right: Trade Panel */}
-        <div className="hidden w-80 shrink-0 md:block">
-          <TradePanel
-            tokenAddress={address}
-            tokenSymbol={token.symbol}
-            tokenPrice={token.price}
-          />
+        {/* Right: Trade panel */}
+        <div className="hidden md:flex w-72 xl:w-80 shrink-0 flex-col border-l border-zinc-800/60 overflow-y-auto">
+          <TradePanel tokenAddress={address} tokenSymbol={token.symbol} tokenPrice={token.price} />
         </div>
       </div>
 
-      {/* Mobile Trade Panel */}
-      <div className="border-t border-zinc-800 p-4 md:hidden">
-        <TradePanel
-          tokenAddress={address}
-          tokenSymbol={token.symbol}
-          tokenPrice={token.price}
-        />
+      {/* Mobile: Trade panel below */}
+      <div className="shrink-0 border-t border-zinc-800 md:hidden overflow-y-auto max-h-96">
+        <TradePanel tokenAddress={address} tokenSymbol={token.symbol} tokenPrice={token.price} />
       </div>
 
       <TokenBanner position="bottom" />

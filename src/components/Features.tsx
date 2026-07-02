@@ -1,64 +1,37 @@
 "use client";
 
-import { Shield, Zap, Globe, TrendingUp, Smartphone, Users } from "lucide-react";
-
 const features = [
-  {
-    icon: Zap,
-    title: "Trade in Seconds",
-    description: "Instant swaps on Solana. No delays, no missed opportunities.",
-  },
-  {
-    icon: Shield,
-    title: "Secure by Default",
-    description: "Sign in with Apple or Google. Your keys, your crypto, always.",
-  },
-  {
-    icon: Globe,
-    title: "Solana Native",
-    description: "Built for the fastest blockchain. Sub-second finality.",
-  },
-  {
-    icon: TrendingUp,
-    title: "Real-Time Data",
-    description: "Live prices, charts, and trending tokens powered by Codex & Jupiter.",
-  },
-  {
-    icon: Smartphone,
-    title: "Trade Anywhere",
-    description: "Open a trade on your phone, close it on desktop — seamlessly.",
-  },
-  {
-    icon: Users,
-    title: "Social Trading",
-    description: "See what top traders are buying. Follow the alpha.",
-  },
+  "become a legend, top the leaderboard",
+  "discover trending tokens before everyone else",
+  "real time alerts for what the best are buying",
+  "create an account in an instant",
+  "gasless swaps on Solana",
+  "fund with Apple Pay",
 ];
 
 export default function Features() {
   return (
-    <section className="relative px-4 py-24">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-16 text-center">
-          <h2 className="mb-4 text-4xl font-black text-white sm:text-5xl">
-            built for <span className="text-yellow-400">chads</span>
-          </h2>
-          <p className="mx-auto max-w-xl text-lg text-zinc-400">
-            Everything you need to trade like a legend. Fast, secure, and always on.
-          </p>
-        </div>
-
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature) => (
+    <section className="border-t border-zinc-900 px-6 py-24">
+      <div className="mx-auto max-w-5xl">
+        <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-yellow-400">
+          why ChadWallet
+        </p>
+        <h2 className="mb-16 text-4xl font-black leading-tight text-white sm:text-6xl">
+          never miss out again.
+        </h2>
+        <div className="divide-y divide-zinc-800/60">
+          {features.map((f, i) => (
             <div
-              key={feature.title}
-              className="group rounded-2xl border border-zinc-800 bg-zinc-900/50 p-8 transition hover:border-yellow-500/30 hover:bg-zinc-900"
+              key={i}
+              className="group flex items-center gap-6 py-6 transition hover:pl-2"
             >
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-yellow-400/10 text-yellow-400 transition group-hover:bg-yellow-400/20">
-                <feature.icon className="h-6 w-6" />
-              </div>
-              <h3 className="mb-2 text-lg font-bold text-white">{feature.title}</h3>
-              <p className="text-sm leading-relaxed text-zinc-400">{feature.description}</p>
+              <span className="shrink-0 text-xs font-mono text-zinc-600 w-6">
+                0{i + 1}
+              </span>
+              <p className="text-xl font-bold text-zinc-300 transition group-hover:text-white sm:text-2xl">
+                {f}
+              </p>
+              <span className="ml-auto text-yellow-400 opacity-0 transition group-hover:opacity-100">→</span>
             </div>
           ))}
         </div>
