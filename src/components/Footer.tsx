@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ANDROID_LINK, IPHONE_LINK } from "@/lib/constants";
 
 export default function Footer() {
@@ -11,9 +12,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="mb-2 flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-yellow-400 font-black text-black text-sm">
-                C
-              </div>
+              <Image src="/Assets/logo/dark.png" alt="ChadWallet" width={28} height={28} className="rounded-md" />
               <span className="font-black text-white">
                 Chad<span className="text-yellow-400">Wallet</span>
               </span>

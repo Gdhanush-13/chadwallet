@@ -24,7 +24,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         appearance: {
           theme: "dark",
           accentColor: "#FACC15",
-          logo: "/logo.svg",
+          logo: "/Assets/logo/light.png",
           landingHeader: "Sign in to ChadWallet",
           loginMessage: "Trade like a chad.",
         },

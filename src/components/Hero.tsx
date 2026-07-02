@@ -2,6 +2,7 @@
 
 import { usePrivySafe as usePrivy } from "@/lib/usePrivySafe";
 import Link from "next/link";
+import Image from "next/image";
 import { ANDROID_LINK, IPHONE_LINK } from "@/lib/constants";
 
 export default function Hero() {
@@ -67,52 +68,45 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Phone mockup visual */}
-        <div className="relative mt-16 w-full max-w-sm mx-auto">
-          <div className="relative mx-auto w-[220px]">
-            <div className="relative rounded-[2.5rem] border-2 border-zinc-700 bg-zinc-900 p-3 shadow-2xl shadow-yellow-400/5">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 h-5 w-24 rounded-b-xl bg-zinc-800" />
-              <div className="rounded-[2rem] bg-black overflow-hidden h-[400px] flex flex-col">
-                {/* Mock trading UI inside phone */}
-                <div className="flex items-center gap-2 border-b border-zinc-800 px-4 py-3">
-                  <div className="h-6 w-6 rounded-full bg-yellow-400/20 flex items-center justify-center">
-                    <span className="text-[9px] font-black text-yellow-400">C</span>
-                  </div>
-                  <span className="text-xs font-bold text-white">ChadWallet</span>
-                  <span className="ml-auto text-[10px] font-bold text-yellow-400">LIVE</span>
-                </div>
-                <div className="px-4 py-3 border-b border-zinc-800">
-                  <div className="text-[10px] text-zinc-500">SOL/USD</div>
-                  <div className="text-lg font-black text-white">$145.23</div>
-                  <div className="text-[10px] font-bold text-green-400">+3.45%</div>
-                </div>
-                <div className="flex-1 px-2 py-2 overflow-hidden">
-                  {/* Mini chart bars */}
-                  <div className="flex items-end gap-0.5 h-24 w-full">
-                    {[40,55,45,65,50,70,60,80,65,90,75,85,70,95,80,100,85,78,92,88].map((h,i) => (
-                      <div key={i} className="flex-1 rounded-sm" style={{height:`${h}%`, background: h > 70 ? '#22c55e' : '#ef4444', opacity: 0.7}} />
-                    ))}
-                  </div>
-                </div>
-                <div className="px-3 pb-4 flex gap-2">
-                  <button className="flex-1 rounded-xl bg-green-500 py-2.5 text-[11px] font-black text-white">BUY</button>
-                  <button className="flex-1 rounded-xl bg-red-500 py-2.5 text-[11px] font-black text-white">SELL</button>
-                </div>
-              </div>
+        {/* Real app screenshots */}
+        <div className="relative mt-16 flex items-end justify-center gap-4">
+          {/* Left screenshot (discover) - slightly behind */}
+          <div className="hidden sm:block relative -mr-6 z-0 opacity-80 hover:opacity-100 transition-opacity">
+            <Image
+              src="/Assets/app store/discover.png"
+              alt="ChadWallet discover screen"
+              width={200}
+              height={430}
+              className="drop-shadow-2xl rounded-[2rem]"
+            />
+          </div>
+          {/* Center screenshot (token) - featured */}
+          <div className="relative z-10 drop-shadow-2xl">
+            <Image
+              src="/Assets/app store/token.png"
+              alt="ChadWallet trading screen"
+              width={240}
+              height={516}
+              className="rounded-[2rem] shadow-2xl shadow-yellow-400/10"
+            />
+            {/* Live badge on top */}
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-full border border-green-500/30 bg-black/90 px-3 py-1 text-xs font-bold text-green-400 backdrop-blur-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
+              </span>
+              Live trading
             </div>
-            {/* Floating stats cards */}
-            <div className="absolute -left-16 top-12 rounded-xl border border-zinc-700/50 bg-zinc-900/90 backdrop-blur-sm px-3 py-2 shadow-lg">
-              <div className="text-[9px] text-zinc-500">24h Volume</div>
-              <div className="text-xs font-black text-white">$2.4B</div>
-            </div>
-            <div className="absolute -right-14 top-1/3 rounded-xl border border-zinc-700/50 bg-zinc-900/90 backdrop-blur-sm px-3 py-2 shadow-lg">
-              <div className="text-[9px] text-zinc-500">Traders</div>
-              <div className="text-xs font-black text-yellow-400">10K+</div>
-            </div>
-            <div className="absolute -left-12 bottom-16 rounded-xl border border-green-500/20 bg-green-500/10 backdrop-blur-sm px-3 py-2 shadow-lg">
-              <div className="text-[9px] text-green-400 font-bold">BUY WIF</div>
-              <div className="text-xs font-black text-white">+8.7%</div>
-            </div>
+          </div>
+          {/* Right screenshot (portfolio) - slightly behind */}
+          <div className="hidden sm:block relative -ml-6 z-0 opacity-80 hover:opacity-100 transition-opacity">
+            <Image
+              src="/Assets/app store/portfolio.png"
+              alt="ChadWallet portfolio screen"
+              width={200}
+              height={430}
+              className="drop-shadow-2xl rounded-[2rem]"
+            />
           </div>
         </div>
       </div>

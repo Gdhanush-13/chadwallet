@@ -2,6 +2,7 @@
 
 import { usePrivySafe as usePrivy } from "@/lib/usePrivySafe";
 import Link from "next/link";
+import Image from "next/image";
 import { Wallet, LogOut, Menu, X } from "lucide-react";
 import { useState } from "react";
 
@@ -16,10 +17,14 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 border-b border-yellow-500/20 bg-black/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-yellow-400 font-black text-black text-lg">
-            C
-          </div>
+        <Link href="/" className="flex items-center gap-2.5">
+          <Image
+            src="/Assets/logo/dark.png"
+            alt="ChadWallet"
+            width={36}
+            height={36}
+            className="rounded-lg"
+          />
           <span className="text-xl font-bold text-white">
             Chad<span className="text-yellow-400">Wallet</span>
           </span>
